@@ -9,14 +9,14 @@
 ## you returning values by "GET" functions, otherwise you are make "SET"
 
 makeCacheMatrix <- function(x = matrix()) {
-        inv <- NULL
-        set <- function(set_x) {
-                x <<- set_x
-                inv <<- NULL
+        i <- NULL
+        set <- function(y) {
+                x <<- y
+                i <<- NULL
         }
-        get <- function() get_x
-        setinverse <- function(inverse) inv <<- inverse
-        getinverse <- function() inv
+        get <- function() x
+        setinverse <- function(inverse) i <<- inverse
+        getinverse <- function() i
         list(set = set, get = get,
              setinverse = setinverse,
              getinverse = getinverse)
@@ -31,14 +31,28 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
-        inv_m <- x$getinverse()
-        if (!is.null(inv_m)) {
+        i <- x$getinverse()
+        if (!is.null(i)) {
                 message("getting cached data")
-                return(inv_m)
+                return(i)
         }
         data <- x$get()
-        inv_m <- solve(data, ...)
+        i <- solve(data, ...)
         x$setinverse(i)
-        inv_m
-        
+        i
 }
+##> b <- matrix(sample(-100:100,16,replace=TRUE),4,4)
+##> b
+##[,1] [,2] [,3] [,4]
+##[1,]  -42  -24   15   76
+##[2,]   54  -33  -93   10
+##[3,]  -80    8  -71   29
+##[4,]   58   76   98   41
+##> bc <- makeCacheMatrix(b)
+##> cacheSolve(bc)
+##[,1]          [,2]         [,3]          [,4]
+##[1,] -0.0008584801  0.0070729923 -0.004873085  0.0033130251
+##[2,] -0.0090023340 -0.0003691038  0.010999837  0.0089969060
+##[3,]  0.0036760224 -0.0059801406 -0.006510594 -0.0007504652
+##[4,]  0.0091150985  0.0049724907  0.002065598  0.0048201286
+##>
